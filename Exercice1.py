@@ -11,7 +11,7 @@ def get_min_around(grille, i, j, mot1, mot2):
     diag_haut_gauche = grille[i-1][j-1]
     haut = grille[i-1][j] + 1
 
-    if(len(mot1) - i) < 0 or (len(mot2) - j) <0 or (mot1[i-1] != mot2[j-1]):
+    if(len(mot1) - i) < 0 or (len(mot2) - j) <0 or (mot1[j-1] != mot2[i-1]):
         diag_haut_gauche += 2
     return min(gauche, diag_haut_gauche, haut)
 
@@ -38,6 +38,6 @@ def levenshtein(mot1, mot2):
 
     #print(grille)
     affichage(grille)
-    return grille[len(mot1)][len(mot2)]
+    return grille[len(mot2)][len(mot1)]
 
-print(levenshtein("dragon", "drogu"))
+print(levenshtein("dragonne", "drogu"))
