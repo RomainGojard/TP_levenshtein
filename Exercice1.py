@@ -1,9 +1,12 @@
 import tqdm
 
-def main(mot):
-    mot2 = "apagnan"
-    levenshtein(mot, mot2)
-    return mot
+def main():
+    
+    word = input("le mot: ")
+    best_distance, closest_words = find_closest_words(word)
+
+    print(best_distance)
+    print(closest_words)
 
 
 def get_min_around(grille, i, j, mot1, mot2):
@@ -37,7 +40,53 @@ def levenshtein(mot1, mot2):
 
 
     #print(grille)
-    affichage(grille)
+    #affichage(grille)
     return grille[len(mot2)][len(mot1)]
 
-print(levenshtein("dragonne", "drogu"))
+#print(levenshtein("antépénultièmeàtagrandmèrelatainp", "antérieuràtongrospere"))
+
+
+def find_closest_words(word):
+    with open("french.txt", "r") as file:
+        dictionary_words = file.readlines()
+    
+    closest_words = []
+    best_distance = float('inf')
+
+    for dictionnary_word in tqdm.tqdm(dictionary_words, desc="Processing words"):
+        dictionnary_word = dictionnary_word.strip()
+        distance = levenshtein(word, dictionnary_word)
+        if distance < best_distance:
+            best_distance = distance
+            closest_words = [dictionnary_word]
+        elif distance == best_distance:
+            closest_words.append(dictionnary_word)
+
+    return best_distance, closest_words
+
+if __name__ == "__main__":
+    main()
+
+
+# def find_closest_words(word):
+#     file = open("french.txt", "r")
+#     dictionnary_word = file.readline()
+#     closest_words = [dictionnary_word]
+#     best_distance = levenshtein(word, dictionnary_word)
+#     dictionnary_word = file.readline()
+    
+#     while dictionnary_word != "" :
+#         distance = levenshtein(word, dictionnary_word)
+#         if distance < best_distance:
+#             best_distance = distance
+#             closest_words = [dictionnary_word]
+#         elif distance == best_distance:
+#             closest_words.append(dictionnary_word)
+        
+#         dictionnary_word = file.readline()
+
+#     return best_distance, closest_words
+
+
+
+# main()
