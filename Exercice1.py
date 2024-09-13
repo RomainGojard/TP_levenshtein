@@ -1,13 +1,13 @@
 import tqdm
+from queue import PriorityQueue
 
 def main():
-    
     word = input("le mot: ")
-    best_distance, closest_words = find_closest_words(word)
+    closest_words = find_closest_words(word)
 
-    print(best_distance)
-    print(closest_words)
-
+    print("Les 10 mots les plus proches sont :")
+    for distance, closest_word in closest_words:
+        print(f"{closest_word.strip()} avec une distance de {-distance}")
 
 def get_min_around(grille, i, j, mot1, mot2):
     gauche = grille[i][j-1] + 1
@@ -50,43 +50,22 @@ def find_closest_words(word):
     with open("french.txt", "r") as file:
         dictionary_words = file.readlines()
     
+    pq = PriorityQueue()
+
+    for dictionary_word in tqdm.tqdm(dictionary_words, desc="Processing words"):
+        dictionary_word = dictionary_word.strip()
+        distance = levenshtein(word, dictionary_word)
+        
+        pq.put((-distance, dictionary_word)) 
+        
+        if pq.qsize() > 10:
+            pq.get()
+
     closest_words = []
-    best_distance = float('inf')
+    while not pq.empty():
+        closest_words.append(pq.get())
 
-    for dictionnary_word in tqdm.tqdm(dictionary_words, desc="Processing words"):
-        dictionnary_word = dictionnary_word.strip()
-        distance = levenshtein(word, dictionnary_word)
-        if distance < best_distance:
-            best_distance = distance
-            closest_words = [dictionnary_word]
-        elif distance == best_distance:
-            closest_words.append(dictionnary_word)
-
-    return best_distance, closest_words
+    return closest_words
 
 if __name__ == "__main__":
     main()
-
-
-# def find_closest_words(word):
-#     file = open("french.txt", "r")
-#     dictionnary_word = file.readline()
-#     closest_words = [dictionnary_word]
-#     best_distance = levenshtein(word, dictionnary_word)
-#     dictionnary_word = file.readline()
-    
-#     while dictionnary_word != "" :
-#         distance = levenshtein(word, dictionnary_word)
-#         if distance < best_distance:
-#             best_distance = distance
-#             closest_words = [dictionnary_word]
-#         elif distance == best_distance:
-#             closest_words.append(dictionnary_word)
-        
-#         dictionnary_word = file.readline()
-
-#     return best_distance, closest_words
-
-
-
-# main()
